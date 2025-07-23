@@ -212,9 +212,8 @@ if (heightTop < 30) heightTop = 30;
   }
   score = 0;
 platforms.forEach(p => p.passed = false);
-if (!isRunning) update();
 
-  update();
+update();
 }
 
 
