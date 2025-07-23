@@ -267,7 +267,7 @@ function drawPlatform() {
 function drawStartMessage() {
   ctx.fillStyle = "white";
   ctx.font = "24px Arial";
-  ctx.fillText("Wciśnij SPACJĘ, aby rozpocząć", canvas.width / 2 - 160, canvas.height / 2);
+  ctx.fillText("Wciśnij SPACJĘ, aby rozpocząć.", canvas.width / 2 - 160, canvas.height / 2);
 }
 
 
