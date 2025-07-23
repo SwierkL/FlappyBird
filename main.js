@@ -17,11 +17,12 @@ let player = {
   speed: 4,
   jumpForce: -10,
   jumpCount: 0,
-  maxJumps: 0
+  maxJumps: 9999
 };
 
 let cameraX = 0;
 let score = 0;
+let waitingToStart = true;
 
 let keys = {
   left: false,
@@ -29,10 +30,6 @@ let keys = {
   jump: false
 };
 
-function drawPlayer() {
-  ctx.fillStyle = "Yellow";
-  ctx.fillRect(player.x, player.y, player.width, player.height);
-}
 
 
 function drawPlayer() {
@@ -40,11 +37,6 @@ function drawPlayer() {
   ctx.fillRect(player.x - cameraX, player.y, player.width, player.height);
 }
 
-function drawScore() {
-  ctx.fillStyle = "white";
-  ctx.font = "20px Arial";
-  ctx.fillText("Punkty: " + score, 20, 30);
-}
 
 function updateCamera() {
   const center = canvas.width / 2;
@@ -141,18 +133,23 @@ function update() {
   if (gameOver) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+   if (waitingToStart) {
+    drawPlatform();
+    drawPlayer();
+    drawStartMessage();
+    requestAnimationFrame(update);
+    return;  // tu zatrzymujemy update dopóki nie wciśniesz spacji
+  }
+
   movement();
   applyGravity();
   handleCollisions();
-
   updateCamera();
-
   drawPlatform();
   drawPlayer();
-  requestAnimationFrame(update);
   updateScore();
-drawScore();
-
+  drawScore();
+  requestAnimationFrame(update);
 }
 
 function updateScore() {
@@ -184,6 +181,7 @@ function resetGame() {
   player.jumpCount = 0;
   cameraX = 0;
   gameOver = false;
+  waitingToStart = true;
   document.getElementById("resetBtn").style.display = "none";
 
     platforms.length = 0;
@@ -214,9 +212,9 @@ if (heightTop < 30) heightTop = 30;
   score = 0;
 platforms.forEach(p => p.passed = false);
 
-
   update();
 }
+
 
 
 function drawPlatform() {
@@ -226,16 +224,35 @@ function drawPlatform() {
   });
 }
 
+function drawStartMessage() {
+  ctx.fillStyle = "white";
+  ctx.font = "24px Arial";
+  ctx.fillText("Wciśnij SPACJĘ, aby rozpocząć", canvas.width / 2 - 160, canvas.height / 2);
+}
 
 
 
 // Obsługa klawiszy
 document.addEventListener("keydown", (e) => {
-  if ((e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space")) {
-    player.dy = player.jumpForce;
-    player.jumpCount++;
+  if (e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space") {
+    if (waitingToStart) {
+      waitingToStart = false;
+      // Jeśli chcesz, żeby zaraz po starcie wykonał się skok, odkomentuj poniższy kod:
+      /*
+      if (player.jumpCount < player.maxJumps) {
+        player.dy = player.jumpForce;
+        player.jumpCount++;
+      }
+      */
+    } else {
+      if (player.jumpCount < player.maxJumps) {
+        player.dy = player.jumpForce;
+        player.jumpCount++;
+      }
+    }
   }
 });
+
 
 
 document.getElementById("resetBtn").addEventListener("click", resetGame);
