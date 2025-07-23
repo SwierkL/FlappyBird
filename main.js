@@ -5,6 +5,10 @@ const platformCount = 200; // liczba słupów
 const spacing =150;
 const worldWidth = platformCount * spacing + 500;
 const platforms = [];
+const jumpSound = new Audio("sounds/jump.mp3");
+const deathSound = new Audio("sounds/death.mp3");
+
+
 
 let player = {
   x: 50,
@@ -156,7 +160,10 @@ function updateScore() {
     if (!platform.passed && (player.x > platform.x + platform.width)) {
       score++;
       platform.passed = true;
+      
+      if (score % 5 === 0){
       player.speed += 0.1;
+      }
     }
   }
 }
@@ -170,6 +177,8 @@ function drawScore() {
 
 function endGame() {
   gameOver = true;
+    deathSound.currentTime = 0;
+    deathSound.play();
   document.getElementById("resetBtn").style.display = "block";
 }
 
@@ -270,25 +279,22 @@ function drawStartMessage() {
   ctx.font = "24px Arial";
   ctx.fillText("Wciśnij SPACJĘ, aby rozpocząć.", canvas.width / 2 - 160, canvas.height / 2);
 }
-
-
+//Głośność skoku
+jumpSound.volume = 0.05;
 
 // Obsługa klawiszy
+
 document.addEventListener("keydown", (e) => {
+  if (gameOver) return;
   if (e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space") {
     if (waitingToStart) {
       waitingToStart = false;
-      // Jeśli chcesz, żeby zaraz po starcie wykonał się skok, odkomentuj poniższy kod:
-      /*
-      if (player.jumpCount < player.maxJumps) {
-        player.dy = player.jumpForce;
-        player.jumpCount++;
-      }
-      */
     } else {
       if (player.jumpCount < player.maxJumps) {
         player.dy = player.jumpForce;
         player.jumpCount++;
+        jumpSound.currentTime = 0;
+        jumpSound.play();
       }
     }
   }
