@@ -195,18 +195,20 @@ const heightTop = canvas.height - heightBottom - gap;
 
 if (heightTop < 30) heightTop = 30;
 
+const greenCapHeight = 10;
+
     platforms.push({
       x: x,
-      y: canvas.height - heightBottom,
+      y: canvas.height - heightBottom - greenCapHeight,
       width: platformWidth,
-      height: heightBottom
+      height: heightBottom + greenCapHeight
     });
 
     platforms.push({
       x: x,
       y: 0,
       width: platformWidth,
-      height: heightTop
+      height: heightTop + greenCapHeight
     });
 
   }
