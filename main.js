@@ -13,8 +13,8 @@ const deathSound = new Audio("sounds/death.mp3");
 let player = {
   x: 50,
   y: 200,
-  width: 30,
-  height: 40,
+  width: 20,
+  height: 30,
   dx: 0,
   dy: 0,
   grounded: false,
@@ -99,10 +99,10 @@ if (player.y < 0) {
 function applyGravity() {
   if (!player.grounded) {
     if (player.dy < 0) {
-      // Wznoszenie — mniejsza grawitacja, np. 0.3
+      // Wznoszenie 
       player.dy += 0.6;
     } else {
-      // Opadanie — większa grawitacja, np. 0.7
+      // Opadanie 
       player.dy += 0.35;
     }
   }
@@ -166,19 +166,18 @@ function resetGame() {
   player.jumpCount = 0;
   cameraX = 0;
   gameOver = false;
-  waitingToStart = true;
+  waitingToStart = true; 
 
-    platforms.length = 0;
+  platforms.length = 0;
   for (let i = 0; i < platformCount; i++) {
-    const x = i * spacing + canvas.width /2;
-const gap = 200;
+    const x = i * spacing + canvas.width / 2; 
+    const gap = 200;
 
-const heightBottom = Math.floor(Math.random() * 150) + 50;
-const heightTop = canvas.height - heightBottom - gap;
+    const heightBottom = Math.floor(Math.random() * 150) + 50;
+    let heightTop = canvas.height - heightBottom - gap;
+    if (heightTop < 30) heightTop = 30;
 
-if (heightTop < 30) heightTop = 30;
-
-const greenCapHeight = 10;
+    const greenCapHeight = 10;
 
     platforms.push({
       x: x,
@@ -193,13 +192,19 @@ const greenCapHeight = 10;
       width: platformWidth,
       height: heightTop + greenCapHeight
     });
-
   }
-  score = 0;
-platforms.forEach(p => p.passed = false);
 
+  score = 0;
+  platforms.forEach(p => p.passed = false);
+
+  console.log("Mapa zresetowana:", platforms.length, "platformy");
+
+  if (!isRunning) {
+    requestAnimationFrame(update);
+  }
 
 }
+
 
 
 
@@ -329,7 +334,11 @@ function botController() {
 
 // Pętla gry
 function update() {
-  if (gameOver) return;
+ if (gameOver) {
+  isRunning = false; // ← zatrzymujemy dalsze update'y
+  return;
+}
+
   if (!isRunning) isRunning = true;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -365,5 +374,5 @@ document.getElementById("resetBtn").addEventListener("click", resetGame);
 resetGame();
 
 
-update();
+
 
