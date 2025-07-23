@@ -167,7 +167,6 @@ function resetGame() {
   cameraX = 0;
   gameOver = false;
   waitingToStart = true;
-  document.getElementById("resetBtn").style.display = "none";
 
     platforms.length = 0;
   for (let i = 0; i < platformCount; i++) {
@@ -199,7 +198,7 @@ const greenCapHeight = 10;
   score = 0;
 platforms.forEach(p => p.passed = false);
 
-update();
+
 }
 
 
@@ -274,7 +273,22 @@ document.addEventListener("keydown", (e) => {
     }
   }
 });
-let botEnabled = true; 
+
+document.addEventListener('keydown', function(event) {
+  if (event.code === 'Space' && document.activeElement.tagName === 'BUTTON') {
+    event.preventDefault();
+  }
+});
+
+let botEnabled = false; 
+
+const toggleBotBtn = document.getElementById("toggleBotBtn");
+
+toggleBotBtn.addEventListener("click", () => {
+  botEnabled = !botEnabled;
+  toggleBotBtn.textContent = botEnabled ? "Wyłącz bota" : "Włącz bota";
+});
+
 
 function botController() {
   if (!botEnabled || gameOver || waitingToStart) return;
@@ -349,4 +363,7 @@ document.getElementById("resetBtn").addEventListener("click", resetGame);
 
 
 resetGame();
+
+
+update();
 

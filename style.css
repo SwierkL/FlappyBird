@@ -1,4 +1,12 @@
 /* style.css */
+#buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* odstęp między przyciskami */
+  width: 150px; /* opcjonalnie, by przyciski miały szerokość */
+  margin-top: 20px; /* trochę miejsca nad przyciskami */
+}
+
 body {
   margin: 0;
   background-color: #333;
