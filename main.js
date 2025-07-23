@@ -130,31 +130,6 @@ if (player.x + player.width > worldWidth) {
 
 let gameOver = false;
 
-function update() {
-
-  if (gameOver) return;
-  if (!isRunning) isRunning = true;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-   if (waitingToStart) {
-    drawPlatform();
-    drawPlayer();
-    drawStartMessage();
-    requestAnimationFrame(update);
-    return;  // tu zatrzymujemy update dopóki nie wciśniesz spacji
-  }
-
-  movement();
-  applyGravity();
-  handleCollisions();
-  updateCamera();
-  drawPlatform();
-  drawPlayer();
-  updateScore();
-  drawScore();
-  requestAnimationFrame(update);
-}
-
 function updateScore() {
   for (let platform of platforms) {
     if (!platform.passed && (player.x > platform.x + platform.width)) {
@@ -299,6 +274,73 @@ document.addEventListener("keydown", (e) => {
     }
   }
 });
+let botEnabled = true; 
+
+function botController() {
+  if (!botEnabled || gameOver || waitingToStart) return;
+
+  const lookahead = 140;
+
+  // Skok przy dolnej przeszkodzie (kominie dolnym)
+  const nextBottomObstacle = platforms.find(p =>
+    p.x > player.x && p.x - player.x < lookahead && p.y > 0
+  );
+
+  if (nextBottomObstacle) {
+    const gapTop = nextBottomObstacle.y;
+    const playerCenterY = player.y + player.height / 2;
+
+    if (playerCenterY > gapTop - 50 && player.jumpCount < player.maxJumps) {
+      player.dy = player.jumpForce;
+      player.jumpCount++;
+      jumpSound.currentTime = 0;
+      jumpSound.play();
+      return;
+    }
+  }
+
+  // Skok gdy za blisko do dołu mapy 
+  const floorThreshold = canvas.height - player.height - 20;
+  if (player.y > floorThreshold && player.jumpCount < player.maxJumps) {
+    player.dy = player.jumpForce;
+    player.jumpCount++;
+    jumpSound.currentTime = 0;
+    jumpSound.play();
+    return;
+  }
+}
+
+
+
+
+// Pętla gry
+function update() {
+  if (gameOver) return;
+  if (!isRunning) isRunning = true;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (waitingToStart) {
+    drawPlatform();
+    drawPlayer();
+    drawStartMessage();
+    requestAnimationFrame(update);
+    return;
+  }
+
+  botController();
+
+  movement();
+  applyGravity();
+  handleCollisions();
+  updateCamera();
+  drawPlatform();
+  drawPlayer();
+  updateScore();
+  drawScore();
+
+  requestAnimationFrame(update);
+}
 
 
 
