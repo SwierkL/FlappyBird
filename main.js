@@ -110,9 +110,6 @@ function applyGravity() {
 function movement() {
   player.dx = 0;
 
-  if (keys.left) {
-    player.dx = -player.speed;
-  }
   if (keys.right) {
     player.dx = player.speed;
   }
