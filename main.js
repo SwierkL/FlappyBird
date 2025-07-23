@@ -157,6 +157,7 @@ function updateScore() {
     if (!platform.passed && (player.x > platform.x + platform.width)) {
       score++;
       platform.passed = true;
+      player.speed += 0.1;
     }
   }
 }
@@ -178,6 +179,7 @@ function resetGame() {
   player.y = 380;
   player.dx = 0;
   player.dy = 0;
+  player.speed = 4;
   player.jumpCount = 0;
   cameraX = 0;
   gameOver = false;
@@ -218,11 +220,49 @@ platforms.forEach(p => p.passed = false);
 
 
 function drawPlatform() {
-  ctx.fillStyle = "green";
   platforms.forEach(platform => {
-    ctx.fillRect(platform.x - cameraX, platform.y, platform.width, platform.height);
+    const x = platform.x - cameraX;
+    const y = platform.y;
+    const w = platform.width;
+    const h = platform.height;
+
+    if (y === 0) {
+      // górny komin - odwrócony
+      ctx.save();
+      ctx.translate(x + w / 2, y + h / 2);
+      ctx.rotate(Math.PI);
+      ctx.fillStyle = "#8B0000";
+      ctx.fillRect(-w / 2, -h / 2, w, h);
+
+      ctx.fillStyle = "#228B22";
+      ctx.fillRect(-w / 2 - 5, -h / 2 - 10, w + 10, 10);
+
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-w / 2, -h / 2);
+      ctx.lineTo(w / 2, -h / 2);
+      ctx.stroke();
+
+      ctx.restore();
+    } else {
+      // dolny komin - normalnie
+      ctx.fillStyle = "#8B0000";
+      ctx.fillRect(x, y, w, h);
+
+      ctx.fillStyle = "#228B22";
+      ctx.fillRect(x - 5, y - 10, w + 10, 10);
+
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + w, y);
+      ctx.stroke();
+    }
   });
 }
+
 
 function drawStartMessage() {
   ctx.fillStyle = "white";
