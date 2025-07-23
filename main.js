@@ -23,6 +23,7 @@ let player = {
 let cameraX = 0;
 let score = 0;
 let waitingToStart = true;
+let isRunning = false;
 
 let keys = {
   left: false,
@@ -128,6 +129,7 @@ let gameOver = false;
 function update() {
 
   if (gameOver) return;
+  if (!isRunning) isRunning = true;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
    if (waitingToStart) {
@@ -210,6 +212,7 @@ if (heightTop < 30) heightTop = 30;
   }
   score = 0;
 platforms.forEach(p => p.passed = false);
+if (!isRunning) update();
 
   update();
 }
@@ -298,4 +301,3 @@ document.getElementById("resetBtn").addEventListener("click", resetGame);
 
 resetGame();
 
-update();
